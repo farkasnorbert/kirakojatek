@@ -3,9 +3,9 @@ package com.company;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 
 public class Main {
 
@@ -13,12 +13,10 @@ public class Main {
     private static boolean solseq = false;
     private static boolean pcost = false;
     private static boolean nvisited = false;
-    private static int H=0;
+    private static int H=1;
+    private static int coast;
     private static int N;
     private static int M;
-    private static int [][] T;
-    private static int n;
-    private static int [][]Tend;
     public static void main(String[] args) {
         for (int i = 0; i < args.length; i++) {
             String s = args[i];
@@ -62,20 +60,153 @@ public class Main {
                     break;
             }
         }
+        int [][] T=initialize();
+        int [][] goal=initializeEND(T.length);
+        Node start = new Node(null,T,0);
+        if(solution(start,goal)){
+
+        }
     }
-    private static void beolvas(){
-        Scanner in = new Scanner(System.in);
-        System.out.println("Tabla merete: ");
-        n = in.nextInt();
-        T=new int [n][n];
-        Tend=new int [n][n];
-        int l=0;
-        for(int i=0; i<n;i++){
-            for(int j=0; j<n; j++){
-                Tend[i][j]=l;
-                l++;
+
+    private static boolean solution(Node start,int [][] goal) {
+        List<Node> Open = new ArrayList<>();
+        List<Node> Closed = new ArrayList<>();
+        Open.add(start);
+        int n;
+        while(!Open.isEmpty()){
+            n=lowestf(Open);
+            Closed.add(Open.get(n));
+            Node nNode = Open.get(n);
+            Open.remove(n);
+            if(calculateCost(nNode)==0){
+                coast=nNode.cost;
+                if(solseq){
+                    printP(nNode);
+                }
+                return true;
+            }
+            List<Node> s = new ArrayList<>();
+            gSuc(s,nNode);
+            for (Node i:s) {
+                i.parent = nNode;
+                i.cost = i.parent.cost+1;
+                int x=inList(Open,i);
+                if(x!=-1 && Open.get(x).cost<=i.cost){
+                    continue;
+                }
+                x=inList(Closed,i);
+                if(x!=-1 && Closed.get(x).cost<=i.cost){
+                    continue;
+                }
+                remove(i,Open,Closed);
+                Open.add(i);
             }
         }
+        return false;
+    }
+
+    private static void remove(Node i, List<Node> open, List<Node> closed) {
+        int x =inList(open,i);
+        while (x!=-1){
+            open.remove(x);
+            x =inList(open,i);
+        }
+        x=inList(closed,i);
+        while (x!=-1){
+            closed.remove(x);
+            x=inList(closed,i);
+        }
+    }
+
+    private static int inList(List<Node> l, Node n) {
+        for (int i=0; i<l.size(); i++) {
+            if(n.Same(l.get(i))){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    private static void gSuc(List<Node> s, Node nNode) {
+
+    }
+
+    private static int lowestf(List<Node> o){
+        int n = 0;
+        int c = calculateCost(o.get(0));
+        for (int i = 1; i<o.size(); i++) {
+            int x = calculateCost(o.get(i));
+            if(x<c){
+                n=i;
+                c=x;
+            }
+        }
+        return n;
+    }
+
+    private static int calculateCost(Node n) {
+        int [][]t = n.table;
+        switch (H){
+            case 1:
+                return WrongPositions(t);
+                break;
+            case 2:
+                return Manhattan(t);
+                break;
+        }
+    }
+
+    private static int WrongPositions(int[][] t) {
+        int count = 0;
+        int n = t.length;
+        int c = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (t[i][j] != 0 && t[i][j] != n * i + j)
+                {
+                    count++;
+                }
+                c++;
+            }
+        }
+
+        return count;
+    }
+
+    private static int Manhattan(int[][] t) {
+        int c = 0;
+
+        int n = t.length;
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int value = t[i][j];
+                if (value == 0) continue;
+                int x = -1;
+                int y = -1;
+                x = value / n;
+                y = value % n;
+                int dist = ManhattanDistance(i, j, x, y);
+                c += dist;
+            }
+        }
+
+        return c;
+    }
+
+    private static int ManhattanDistance(int x1, int y1, int x2, int y2)
+    {
+        int x = Math.abs(x1 - x2);
+        int y = Math.abs(y1 - y2);
+        return x + y;
+    }
+
+    private static int [][] initialize(){
+        Scanner in = new Scanner(System.in);
+        System.out.println("Tabla merete: ");
+        int n = in.nextInt();
+        int [][] T=new int [n][n];
         if(file.equals("")){
             System.out.println("Kezdoalapot megadasa, 0 az ures");
             for(int i=0; i<n; i++){
@@ -98,8 +229,20 @@ public class Main {
                 e.printStackTrace();
             }
         }
+        return T;
     }
-    private static void kiir(int [][]t, int n){
+    private static int [][]initializeEND(int n){
+        int [][] Tend=new int [n][n];
+        int l=0;
+        for(int i=0; i<n;i++){
+            for(int j=0; j<n; j++){
+                Tend[i][j]=l;
+                l++;
+            }
+        }
+        return Tend;
+    }
+    private static void printM(int [][]t, int n){
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
                 System.out.print(t[i][j]);
@@ -108,9 +251,17 @@ public class Main {
             System.out.println();
         }
     }
-    private boolean comp(int [][]t1, int [][]t2){
+    private static  void  printP(Node m){
+        if(m==null){
+            return;
+        }
+        printP(m.parent);
+        printM(m.table,m.table.length);
+        System.out.println();
+    }
+    private static boolean comp(int [][]t1, int [][]t2){
         for(int i = 0; i<t1.length;i++){
-            for(int j=0; j<t1.length;i++){
+            for(int j=0; j<t1[i].length;i++){
                 if(t1[i][j]!=t2[i][j]){
                     return false;
                 }
