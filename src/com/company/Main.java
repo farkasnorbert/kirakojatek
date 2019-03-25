@@ -67,11 +67,11 @@ public class Main {
         if(solution(start,goal)){
             System.out.println("Sikerult");
             if(pcost){
-                System.out.print("Koltseg:");
+                System.out.print("Koltseg: ");
                 System.out.println(cost);
             }
             if(nvisited){
-                System.out.print("Meglatogatott");
+                System.out.print("Meglatogatott: ");
                 System.out.println(visited);
             }
         }else {
@@ -154,8 +154,6 @@ public class Main {
                 }
             }
         }
-        System.out.print(ei);
-        System.out.println(ej);
         if(ei==0 && ej==0){
             Node n2 = new Node(null,node.table,0);
             n2.table[ei][ej]=n2.table[ei+1][ej];
