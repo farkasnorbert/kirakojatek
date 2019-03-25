@@ -108,4 +108,14 @@ public class Main {
             System.out.println();
         }
     }
+    private boolean comp(int [][]t1, int [][]t2){
+        for(int i = 0; i<t1.length;i++){
+            for(int j=0; j<t1.length;i++){
+                if(t1[i][j]!=t2[i][j]){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
