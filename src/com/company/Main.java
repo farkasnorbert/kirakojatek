@@ -128,8 +128,80 @@ public class Main {
     }
 
 
-    private static void gSuc(List<Node> s, Node nNode) {
-
+    private static void gSuc(List<Node> s, Node node) {
+        int ei=0;
+        int ej=0;
+        int n = node.table.length;
+        int [][] t = node.table;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(t[i][j]==0){
+                    ei=i;
+                    ej=j;
+                    break;
+                }
+            }
+        }
+        if(ei==0 && ej==0){
+            Node n2 = new Node(null,node.table,0);
+            n2.table[ei][ej]=n2.table[ei+1][ej];
+            n2.table[ei+1][ej]=0;
+            Node n3 = new Node(null,node.table,0);
+            n3.table[ei][ej]=n3.table[ei][ej+1];
+            n3.table[ei][ej+1]=0;
+            s.add(n2);
+            s.add(n3);
+        }else {
+            if(ei==0 && ej==n-1){
+                Node n2 = new Node(null,node.table,0);
+                n2.table[ei][ej]=n2.table[ei+1][ej];
+                n2.table[ei+1][ej]=0;
+                Node n3 = new Node(null,node.table,0);
+                n3.table[ei][ej]=n3.table[ei][ej-1];
+                n3.table[ei][ej-1]=0;
+                s.add(n2);
+                s.add(n3);
+            }else{
+                if(ei==n-1 && ej==0){
+                    Node n2 = new Node(null,node.table,0);
+                    n2.table[ei][ej]=n2.table[ei-1][ej];
+                    n2.table[ei-1][ej]=0;
+                    Node n3 = new Node(null,node.table,0);
+                    n3.table[ei][ej]=n3.table[ei][ej+1];
+                    n3.table[ei][ej+1]=0;
+                    s.add(n2);
+                    s.add(n3);
+                }else{
+                    if(ei==ej && ej==n-1){
+                        Node n2 = new Node(null,node.table,0);
+                        n2.table[ei][ej]=n2.table[ei+1][ej];
+                        n2.table[ei-1][ej]=0;
+                        Node n3 = new Node(null,node.table,0);
+                        n3.table[ei][ej]=n3.table[ei][ej-1];
+                        n3.table[ei][ej-1]=0;
+                        s.add(n2);
+                        s.add(n3);
+                    }else{
+                        Node n2 = new Node(null,node.table,0);
+                        n2.table[ei][ej]=n2.table[ei+1][ej];
+                        n2.table[ei+1][ej]=0;
+                        Node n3 = new Node(null,node.table,0);
+                        n3.table[ei][ej]=n3.table[ei][ej+1];
+                        n3.table[ei][ej+1]=0;
+                        Node n4 = new Node(null,node.table,0);
+                        n4.table[ei][ej]=n4.table[ei-1][ej];
+                        n4.table[ei-1][ej]=0;
+                        Node n5 = new Node(null,node.table,0);
+                        n5.table[ei][ej]=n5.table[ei][ej-1];
+                        n5.table[ei][ej-1]=0;
+                        s.add(n2);
+                        s.add(n3);
+                        s.add(n4);
+                        s.add(n5);
+                    }
+                }
+            }
+        }
     }
 
     private static int lowestf(List<Node> o){
