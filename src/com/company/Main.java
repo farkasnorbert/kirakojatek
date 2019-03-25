@@ -14,7 +14,8 @@ public class Main {
     private static boolean pcost = false;
     private static boolean nvisited = false;
     private static int H=1;
-    private static int coast;
+    private static int cost;
+    private static int visited=0;
     private static int N;
     private static int M;
     public static void main(String[] args) {
@@ -64,7 +65,17 @@ public class Main {
         int [][] goal=initializeEND(T.length);
         Node start = new Node(null,T,0);
         if(solution(start,goal)){
-
+            System.out.println("Sikerult");
+            if(pcost){
+                System.out.print("Koltseg:");
+                System.out.println(cost);
+            }
+            if(nvisited){
+                System.out.print("Meglatogatott");
+                System.out.println(visited);
+            }
+        }else {
+            System.out.println("Nem sikerult");
         }
     }
 
@@ -74,12 +85,13 @@ public class Main {
         Open.add(start);
         int n;
         while(!Open.isEmpty()){
+            visited++;
             n=lowestf(Open);
             Closed.add(Open.get(n));
             Node nNode = Open.get(n);
             Open.remove(n);
             if(calculateCost(nNode)==0){
-                coast=nNode.cost;
+                cost=nNode.cost;
                 if(solseq){
                     printP(nNode);
                 }
@@ -142,6 +154,8 @@ public class Main {
                 }
             }
         }
+        System.out.print(ei);
+        System.out.println(ej);
         if(ei==0 && ej==0){
             Node n2 = new Node(null,node.table,0);
             n2.table[ei][ej]=n2.table[ei+1][ej];
@@ -174,7 +188,7 @@ public class Main {
                 }else{
                     if(ei==ej && ej==n-1){
                         Node n2 = new Node(null,node.table,0);
-                        n2.table[ei][ej]=n2.table[ei+1][ej];
+                        n2.table[ei][ej]=n2.table[ei-1][ej];
                         n2.table[ei-1][ej]=0;
                         Node n3 = new Node(null,node.table,0);
                         n3.table[ei][ej]=n3.table[ei][ej-1];
@@ -182,22 +196,82 @@ public class Main {
                         s.add(n2);
                         s.add(n3);
                     }else{
-                        Node n2 = new Node(null,node.table,0);
-                        n2.table[ei][ej]=n2.table[ei+1][ej];
-                        n2.table[ei+1][ej]=0;
-                        Node n3 = new Node(null,node.table,0);
-                        n3.table[ei][ej]=n3.table[ei][ej+1];
-                        n3.table[ei][ej+1]=0;
-                        Node n4 = new Node(null,node.table,0);
-                        n4.table[ei][ej]=n4.table[ei-1][ej];
-                        n4.table[ei-1][ej]=0;
-                        Node n5 = new Node(null,node.table,0);
-                        n5.table[ei][ej]=n5.table[ei][ej-1];
-                        n5.table[ei][ej-1]=0;
-                        s.add(n2);
-                        s.add(n3);
-                        s.add(n4);
-                        s.add(n5);
+                        if(ei==0){
+                            Node n2 = new Node(null,node.table,0);
+                            n2.table[ei][ej]=n2.table[ei+1][ej];
+                            n2.table[ei+1][ej]=0;
+                            Node n3 = new Node(null,node.table,0);
+                            n3.table[ei][ej]=n3.table[ei][ej+1];
+                            n3.table[ei][ej+1]=0;
+                            Node n4 = new Node(null,node.table,0);
+                            n4.table[ei][ej]=n4.table[ei][ej-1];
+                            n4.table[ei][ej-1]=0;
+                            s.add(n2);
+                            s.add(n3);
+                            s.add(n4);
+                        }else{
+                            if(ej==0){
+                                Node n2 = new Node(null,node.table,0);
+                                n2.table[ei][ej]=n2.table[ei+1][ej];
+                                n2.table[ei+1][ej]=0;
+                                Node n3 = new Node(null,node.table,0);
+                                n3.table[ei][ej]=n3.table[ei][ej+1];
+                                n3.table[ei][ej+1]=0;
+                                Node n4 = new Node(null,node.table,0);
+                                n4.table[ei][ej]=n4.table[ei-1][ej];
+                                n4.table[ei-1][ej]=0;
+                                s.add(n2);
+                                s.add(n3);
+                                s.add(n4);
+                            }else{
+                                if(ei==n-1){
+                                    Node n2 = new Node(null,node.table,0);
+                                    n2.table[ei][ej]=n2.table[ei-1][ej];
+                                    n2.table[ei-1][ej]=0;
+                                    Node n3 = new Node(null,node.table,0);
+                                    n3.table[ei][ej]=n3.table[ei][ej+1];
+                                    n3.table[ei][ej+1]=0;
+                                    Node n4 = new Node(null,node.table,0);
+                                    n4.table[ei][ej]=n4.table[ei-1][ej];
+                                    n4.table[ei-1][ej]=0;
+                                    s.add(n2);
+                                    s.add(n3);
+                                    s.add(n4);
+                                }else{
+                                    if(ej==n-1){
+                                        Node n2 = new Node(null,node.table,0);
+                                        n2.table[ei][ej]=n2.table[ei+1][ej];
+                                        n2.table[ei+1][ej]=0;
+                                        Node n3 = new Node(null,node.table,0);
+                                        n3.table[ei][ej]=n3.table[ei][ej-1];
+                                        n3.table[ei][ej-1]=0;
+                                        Node n4 = new Node(null,node.table,0);
+                                        n4.table[ei][ej]=n4.table[ei-1][ej];
+                                        n4.table[ei-1][ej]=0;
+                                        s.add(n2);
+                                        s.add(n3);
+                                        s.add(n4);
+                                    }else{
+                                        Node n2 = new Node(null,node.table,0);
+                                        n2.table[ei][ej]=n2.table[ei+1][ej];
+                                        n2.table[ei+1][ej]=0;
+                                        Node n3 = new Node(null,node.table,0);
+                                        n3.table[ei][ej]=n3.table[ei][ej+1];
+                                        n3.table[ei][ej+1]=0;
+                                        Node n4 = new Node(null,node.table,0);
+                                        n4.table[ei][ej]=n4.table[ei-1][ej];
+                                        n4.table[ei-1][ej]=0;
+                                        Node n5 = new Node(null,node.table,0);
+                                        n5.table[ei][ej]=n5.table[ei][ej-1];
+                                        n5.table[ei][ej-1]=0;
+                                        s.add(n2);
+                                        s.add(n3);
+                                        s.add(n4);
+                                        s.add(n5);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -222,11 +296,10 @@ public class Main {
         switch (H){
             case 1:
                 return WrongPositions(t);
-                break;
             case 2:
                 return Manhattan(t);
-                break;
         }
+        return 0;
     }
 
     private static int WrongPositions(int[][] t) {
